@@ -1,16 +1,6 @@
 #---------------------------------------------------------------------------------------------------------------------
 # Default variables
 #---------------------------------------------------------------------------------------------------------------------
-variable "aws_region" {
-  description = "AWS region."
-  default     = "ap-northeast-1"
-}
-
-variable "aws_profile" {
-  description = "AWS profile."
-  default     = ""
-}
-
 # Module ASG
 variable "instance_type" {
   description = "The instance_type of launchconfig."
