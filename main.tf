@@ -94,7 +94,7 @@ module "alb" {
 
 # Policy : s3-codedeploy
 data "template_file" "s3-codedeploy" {
-  template = "${file("policies/s3-codedeploy.json")}"
+  template = "${file("${path.module}/policies/s3-codedeploy.json")}"
 
   vars {
     s3_arn = "${aws_s3_bucket.codedeploy.arn}"
@@ -110,7 +110,7 @@ resource "aws_iam_policy" "s3-codedeploy" {
 
 # Policy : ssm
 data "template_file" "ssm" {
-  template = "${file("policies/ssm.json")}"
+  template = "${file("${path.module}/policies/ssm.json")}"
 
   vars {
     aws_accountid = "${var.aws_accountid}"
@@ -127,7 +127,7 @@ resource "aws_iam_policy" "ssm" {
 
 # Policy : cwl
 data "template_file" "cwl" {
-  template = "${file("policies/cwl.json")}"
+  template = "${file("${path.module}/policies/cwl.json")}"
 
   vars {
     aws_accountid = "${var.aws_accountid}"
