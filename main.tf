@@ -2,12 +2,6 @@
 # PROVIDER SETTING
 #---------------------------------------------------------------------------------------------------------------------
 
-provider "aws" {
-  region  = "${var.aws_region}"
-  profile = "${var.aws_profile}"
-  version = "~> 1.14"
-}
-
 provider "template" {
   version = "~> 1.0"
 }
