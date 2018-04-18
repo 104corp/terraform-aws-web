@@ -2,10 +2,6 @@
 # PROVIDER SETTING
 #---------------------------------------------------------------------------------------------------------------------
 
-#provider "template" {
-#  version = "~> 1.0"
-#}
-
 #---------------------------------------------------------------------------------------------------------------------
 # TAGS
 #---------------------------------------------------------------------------------------------------------------------
@@ -114,7 +110,7 @@ data "template_file" "ssm" {
 
 resource "aws_iam_policy" "ssm" {
   name_prefix = "ssm-${var.project_name}-${var.project_env}-"
-  description = "SSM paramatert store ${var.project_name}-${var.project_env}- access."
+  description = "SSM paramatert store ${var.project_name}-${var.project_env} access."
 
   policy = "${data.template_file.ssm.rendered}"
 }
@@ -131,7 +127,7 @@ data "template_file" "cwl" {
 
 resource "aws_iam_policy" "cwl" {
   name_prefix = "cwlog-${var.project_name}-${var.project_env}-"
-  description = "Cloudwatch ${var.project_name}-${var.project_env}- access."
+  description = "Cloudwatch ${var.project_name}-${var.project_env} access."
 
   policy = "${data.template_file.cwl.rendered}"
 }
