@@ -41,8 +41,12 @@ provider "aws" {
 
 
 module "simpleweb" {
+  # Using TFE private module registry
   source  = "app.terraform.io/104corp/simpleweb/aws"
   version = "0.1"
+
+  # Usign git
+  # source = "github.com/104corp/terraform-aws-simpleweb"
 
   image_id       = "ami-cece66a8"
   project_name   = "asmweb"
