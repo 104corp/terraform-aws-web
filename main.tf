@@ -3,6 +3,13 @@
 #---------------------------------------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------------------------------------
+# AWS VARIABLES
+#---------------------------------------------------------------------------------------------------------------------
+
+# AWS account id vars ${data.aws_caller_identity.current.account_id}
+data "aws_caller_identity" "current" {}
+
+#---------------------------------------------------------------------------------------------------------------------
 # TAGS
 #---------------------------------------------------------------------------------------------------------------------
 
@@ -103,7 +110,7 @@ data "template_file" "ssm" {
   template = "${file("${path.module}/policies/ssm.json")}"
 
   vars {
-    aws_accountid = "${var.aws_accountid}"
+    aws_accountid = "${data.aws_caller_identity.current.account_id}"
     project_name  = "${var.project_name}"
   }
 }
@@ -120,7 +127,7 @@ data "template_file" "cwl" {
   template = "${file("${path.module}/policies/cwl.json")}"
 
   vars {
-    aws_accountid = "${var.aws_accountid}"
+    aws_accountid = "${data.aws_caller_identity.current.account_id}"
     project_name  = "${var.project_name}"
   }
 }
@@ -223,7 +230,7 @@ resource "aws_s3_bucket_policy" "alblogs" {
         "s3:PutObject"
       ],
       "Effect": "Allow",
-      "Resource": "arn:aws:s3:::${aws_s3_bucket.alblogs.id}/AWSLogs/${var.aws_accountid}/*",
+      "Resource": "arn:aws:s3:::${aws_s3_bucket.alblogs.id}/AWSLogs/${data.aws_caller_identity.current.account_id}/*",
       "Principal": {
         "AWS": [
           "582318560864"
