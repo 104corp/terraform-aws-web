@@ -13,7 +13,6 @@
 | asg_health_check_type | ASG health_check_type. | string | `EC2` | no |
 | asg_max_size | ASG max instance count. | string | `2` | no |
 | asg_min_size | ASG min instance count. | string | `1` | no |
-| aws_accountid | AWS account id.(dev16 : 998121724123, stg16 : 766061410305, sys16 : 101414171737) | string | - | yes |
 | enable_bastion_ssh | The Security Group id of bastion server | string | `true` | no |
 | https_listeners | A list of maps describing the HTTPS listeners for this ALB. Required key/values: port, certificate_arn. Optional key/values: ssl_policy. | map | `<map>` | no |
 | https_listeners_count | A manually provided count/length of the https_listeners list of maps since the list cannot be computed.. | string | `0` | no |
@@ -27,7 +26,6 @@
 | subnet_ids_ec2 | The ids of subnet for EC2. | list | - | yes |
 | target_groups_defaults | Default values for target groups as defined by the list of maps. | map | `<map>` | no |
 | vpc_id | The id of VPC. | string | - | yes |
-
 
 
 
@@ -54,7 +52,6 @@ module "simpleweb" {
   subnet_ids_alb = ["subnet-efb715a6", "subnet-7a987d21"]
   subnet_ids_ec2 = ["subnet-e29c79b9", "subnet-74ba183d"]
   vpc_id         = "vpc-7cf7ff18"
-  aws_accountid  = "998121724123"
 }
 
 ```
