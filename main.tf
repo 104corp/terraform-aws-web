@@ -1,39 +1,16 @@
-#---------------------------------------------------------------------------------------------------------------------
-# PROVIDER SETTING
-#---------------------------------------------------------------------------------------------------------------------
-
-#---------------------------------------------------------------------------------------------------------------------
-# AWS VARIABLES
-#---------------------------------------------------------------------------------------------------------------------
-
-# AWS account id vars ${data.aws_caller_identity.current.account_id}
-data "aws_caller_identity" "current" {}
-
-#---------------------------------------------------------------------------------------------------------------------
-# TAGS
-#---------------------------------------------------------------------------------------------------------------------
-
-locals {
-  res_tag = "${map(
-    "Project", "${var.project_name}",
-    "Env", "${var.project_env}",
-    "Managedby", "TERRAFORM"
-  )}"
-}
-
-#---------------------------------------------------------------------------------------------------------------------
-# AUTO SCALING GROUP
-#---------------------------------------------------------------------------------------------------------------------
+#####################
+# Autoscaling module
+#####################
 
 module "asg" {
   source  = "terraform-aws-modules/autoscaling/aws"
-  version = "2.2.2"
+  version = "2.7.0"
 
-  name        = "${var.project_name}"
-  tags_as_map = "${local.res_tag}"
+  name        = "${var.name}"
+  tags_as_map = "${var.tags}"
 
   # Launch configuration
-  lc_name              = "${var.project_name}"
+  lc_name              = "${var.name}"
   image_id             = "${var.image_id}"
   instance_type        = "${var.instance_type}"
   security_groups      = ["${aws_security_group.asg.id}"]
@@ -41,7 +18,7 @@ module "asg" {
   target_group_arns    = "${module.alb.target_group_arns}"
 
   # Auto scaling group
-  asg_name                  = "ASG-${var.project_name}-${var.project_env}-"
+  asg_name                  = "${var.name}"
   vpc_zone_identifier       = "${var.subnet_ids_ec2}"
   health_check_type         = "${var.asg_health_check_type}"
   min_size                  = "${var.asg_min_size}"
@@ -50,19 +27,19 @@ module "asg" {
   wait_for_capacity_timeout = 0
 }
 
-#---------------------------------------------------------------------------------------------------------------------
-# APPLICATION LOADBALANCE
-#---------------------------------------------------------------------------------------------------------------------
+#########################
+# ALB module
+#########################
 
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "3.2.0"
+  version = "3.4.0"
 
-  load_balancer_name        = "ALB-${var.project_name}-${var.project_env}"
+  load_balancer_name        = "${var.name}"
   security_groups           = ["${aws_security_group.alb.id}"]
   log_bucket_name           = "${aws_s3_bucket.alblogs.id}"
   subnets                   = "${var.subnet_ids_alb}"
-  tags                      = "${local.res_tag}"
+  tags                      = "${var.tags}"
   vpc_id                    = "${var.vpc_id}"
   load_balancer_is_internal = "${var.load_balancer_is_internal}"
 
@@ -78,73 +55,37 @@ module "alb" {
   target_groups_defaults = "${var.target_groups_defaults}"
 }
 
-#---------------------------------------------------------------------------------------------------------------------
-# CODEDEPLOY
-#---------------------------------------------------------------------------------------------------------------------
+####################
+# Codedeploy module
+####################
 
-#---------------------------------------------------------------------------------------------------------------------
-# IAM
-#---------------------------------------------------------------------------------------------------------------------
+##############
+# IAM module
+##############
 
-# Policis
-#---------------------------------------------------------------------------------------------------------------------
-
-# Policy : s3-codedeploy
-data "template_file" "s3-codedeploy" {
-  template = "${file("${path.module}/policies/s3-codedeploy.json")}"
+# Policy : ec2-to-s3-for-codedeploy
+data "template_file" "ec2-to-s3-for-codedeploy" {
+  template = "${file("${path.module}/policies/ec2-to-s3-for-codedeploy.json")}"
 
   vars {
     s3_arn = "${aws_s3_bucket.codedeploy.arn}"
   }
 }
 
-resource "aws_iam_policy" "s3-codedeploy" {
-  name_prefix = "s3-codedeploy-${var.project_name}-${var.project_env}-"
-  description = "S3 Bucket s3-codedeploy-${var.project_name} access."
+resource "aws_iam_policy" "ec2-to-s3-for-codedeploy" {
+  name_prefix = "ec2-to-s3-for-codedeploy-${var.name}-"
+  description = "EC2 to S3 Bucket for Codedeploy ${var.name} access."
 
-  policy = "${data.template_file.s3-codedeploy.rendered}"
+  policy = "${data.template_file.ec2-to-s3-for-codedeploy.rendered}"
 }
 
-# Policy : ssm
-data "template_file" "ssm" {
-  template = "${file("${path.module}/policies/ssm.json")}"
-
-  vars {
-    aws_accountid = "${data.aws_caller_identity.current.account_id}"
-    project_name  = "${var.project_name}"
-  }
-}
-
-resource "aws_iam_policy" "ssm" {
-  name_prefix = "ssm-${var.project_name}-${var.project_env}-"
-  description = "SSM paramatert store ${var.project_name}-${var.project_env} access."
-
-  policy = "${data.template_file.ssm.rendered}"
-}
-
-# Policy : cwl
-data "template_file" "cwl" {
-  template = "${file("${path.module}/policies/cwl.json")}"
-
-  vars {
-    aws_accountid = "${data.aws_caller_identity.current.account_id}"
-    project_name  = "${var.project_name}"
-  }
-}
-
-resource "aws_iam_policy" "cwl" {
-  name_prefix = "cwlog-${var.project_name}-${var.project_env}-"
-  description = "Cloudwatch ${var.project_name}-${var.project_env} access."
-
-  policy = "${data.template_file.cwl.rendered}"
-}
-
+########
 # Roles
-#---------------------------------------------------------------------------------------------------------------------
+########
 
-# Role : EC2
+# EC2
 resource "aws_iam_role" "role_ec2" {
-  name = "Role-EC2-${var.project_name}"
+  name = "EC2-${var.name}"
 
   assume_role_policy = <<EOF
 {
@@ -163,14 +104,14 @@ resource "aws_iam_role" "role_ec2" {
 EOF
 }
 
-resource "aws_iam_instance_profile" "role_ec2_instance_profile" {
-  name = "${aws_iam_role.role_ec2.name}"
-  role = "${aws_iam_role.role_ec2.name}"
+resource "aws_iam_instance_profile" "ec2_web_instance_profile" {
+  name = "${aws_iam_role.ec2_web.name}"
+  role = "${aws_iam_role.ec2_web.name}"
 }
 
 # Role : Codedeploy
 resource "aws_iam_role" "role_codedeploy" {
-  name = "Role-Codedeploy-${var.project_name}"
+  name = "Codedeploy"
 
   assume_role_policy = <<EOF
 {
@@ -202,7 +143,7 @@ resource "aws_iam_role_policy_attachment" "role_codedeploy" {
 
 # Codedeploy
 resource "aws_s3_bucket" "codedeploy" {
-  bucket_prefix = "codedeploy-${var.project_name}-${var.project_env}-"
+  bucket_prefix = "codedeploy-${var.name}-"
   acl           = "private"
 
   tags = "${local.res_tag}"
@@ -210,7 +151,7 @@ resource "aws_s3_bucket" "codedeploy" {
 
 # ALB logs with bucket policy
 resource "aws_s3_bucket" "alblogs" {
-  bucket_prefix = "alblogs-${var.project_name}-${var.project_env}-"
+  bucket_prefix = "alblogs-${var.name}-"
   acl           = "private"
 
   tags = "${local.res_tag}"
@@ -279,43 +220,6 @@ resource "aws_security_group" "alb" {
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-# The SG of AutoScalingGroup EC2 instance
-resource "aws_security_group" "asg" {
-  name        = "SG-ASG-${var.project_name}-${var.project_env}"
-  vpc_id      = "${var.vpc_id}"
-  description = "Allow HTTP from ALB and SSH from bastion."
-
-  tags = "${merge(
-    local.res_tag,
-    map(
-      "Name", "SG-ASG-${var.project_name}-${var.project_env}"
-    )
-  )}"
-
-  ingress {
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    security_groups = ["${aws_security_group.alb.id}"]
-  }
-
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-
-    #security_groups = "${var.sg_bastion_ids}"
-    security_groups = ["${var.enable_bastion_ssh == "true" ?  var.sg_bastion_id : aws_security_group.alb.id }"]
   }
 
   egress {

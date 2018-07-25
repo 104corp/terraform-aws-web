@@ -1,10 +1,34 @@
-#---------------------------------------------------------------------------------------------------------------------
-# Default variables
-#---------------------------------------------------------------------------------------------------------------------
-# Module ASG
+####################
+#  general variables
+#####################
+
+variable "name" {
+  description = "The name of project."
+}
+
+variable "tags" {
+  description = "The tags of resource."
+}
+
+#############
+# ASG module 
+#############
+variable "vpc_id" {
+  description = "The id of VPC."
+}
+
+variable "image_id" {
+  description = "The AMI ID of launchconfig."
+}
+
 variable "instance_type" {
   description = "The instance_type of launchconfig."
   default     = "t2.micro"
+}
+
+variable "subnet_ids_ec2" {
+  description = "The ids of subnet for EC2."
+  type        = "list"
 }
 
 variable "asg_min_size" {
@@ -27,7 +51,9 @@ variable "asg_health_check_type" {
   default     = "EC2"
 }
 
-# Module ALB
+#############
+# ALB module 
+#############
 variable "https_listeners" {
   description = "A list of maps describing the HTTPS listeners for this ALB. Required key/values: port, certificate_arn. Optional key/values: ssl_policy."
   type        = "map"
@@ -42,6 +68,11 @@ variable "https_listeners" {
 variable "https_listeners_count" {
   description = "A manually provided count/length of the https_listeners list of maps since the list cannot be computed.."
   default     = "0"
+}
+
+variable "subnet_ids_alb" {
+  description = "The ids of subnet for ALB."
+  type        = "list"
 }
 
 variable "load_balancer_is_internal" {
@@ -66,45 +97,4 @@ variable "target_groups_defaults" {
     "stickiness_enabled"               = false
     "target_type"                      = "instance"
   }
-}
-
-# Enable/Disable Bastion 
-variable "sg_bastion_id" {
-  description = "The Security Group id of bastion server, shoould be use with enable_bastion = true"
-  default     = "sg-6ffcce09"
-}
-
-variable "enable_bastion_ssh" {
-  description = "The Security Group id of bastion server"
-  default     = true
-}
-
-#---------------------------------------------------------------------------------------------------------------------
-# Required variables
-#---------------------------------------------------------------------------------------------------------------------
-
-variable "project_name" {
-  description = "The name of project."
-}
-
-variable "project_env" {
-  description = "The env of project EX: dev/staging/production."
-}
-
-variable "image_id" {
-  description = "The AMI ID of launchconfig."
-}
-
-variable "vpc_id" {
-  description = "The id of VPC."
-}
-
-variable "subnet_ids_ec2" {
-  description = "The ids of subnet for EC2."
-  type        = "list"
-}
-
-variable "subnet_ids_alb" {
-  description = "The ids of subnet for ALB."
-  type        = "list"
 }
