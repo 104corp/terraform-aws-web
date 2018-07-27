@@ -8,7 +8,7 @@ data "aws_caller_identity" "current" {}
 # Autoscaling module
 #####################
 
-module "asg" {
+module "autoscaling" {
   source  = "terraform-aws-modules/autoscaling/aws"
   version = "2.7.0"
 
