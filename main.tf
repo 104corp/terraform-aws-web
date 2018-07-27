@@ -1,3 +1,9 @@
+#########
+# data 
+#########
+
+data "aws_caller_identity" "current" {}
+
 #####################
 # Autoscaling module
 #####################
@@ -14,7 +20,7 @@ module "asg" {
   image_id             = "${var.image_id}"
   instance_type        = "${var.instance_type}"
   security_groups      = ["${aws_security_group.asg.id}"]
-  iam_instance_profile = "${aws_iam_instance_profile.role_ec2_instance_profile.arn}"
+  iam_instance_profile = "${aws_iam_instance_profile.ec2_web_instance_profile.arn}"
   target_group_arns    = "${module.alb.target_group_arns}"
 
   # Auto scaling group
@@ -49,7 +55,7 @@ module "alb" {
   http_tcp_listeners       = "${list(map("port", "80", "protocol", "HTTP"))}"
   http_tcp_listeners_count = "1"
 
-  target_groups       = "${list(map("name", "ALB-${var.project_name}-${var.project_env}", "backend_protocol", "HTTP", "backend_port", "80"))}"
+  target_groups       = "${list(map("name", "ALB-${var.name}", "backend_protocol", "HTTP", "backend_port", "80"))}"
   target_groups_count = "1"
 
   target_groups_defaults = "${var.target_groups_defaults}"
@@ -84,7 +90,7 @@ resource "aws_iam_policy" "ec2-to-s3-for-codedeploy" {
 ########
 
 # EC2
-resource "aws_iam_role" "role_ec2" {
+resource "aws_iam_role" "ec2_web" {
   name = "EC2-${var.name}"
 
   assume_role_policy = <<EOF
@@ -137,24 +143,24 @@ resource "aws_iam_role_policy_attachment" "role_codedeploy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
 }
 
-#---------------------------------------------------------------------------------------------------------------------
+######
 # S3
-#---------------------------------------------------------------------------------------------------------------------
+######
 
-# Codedeploy
 resource "aws_s3_bucket" "codedeploy" {
-  bucket_prefix = "codedeploy-${var.name}-"
-  acl           = "private"
+  bucket = "codedeploy-${var.name}"
+  acl    = "private"
 
-  tags = "${local.res_tag}"
+  tags = "${var.tags}"
 }
 
 # ALB logs with bucket policy
+
 resource "aws_s3_bucket" "alblogs" {
   bucket_prefix = "alblogs-${var.name}-"
   acl           = "private"
 
-  tags = "${local.res_tag}"
+  tags = "${var.tags}"
 }
 
 resource "aws_s3_bucket_policy" "alblogs" {
@@ -184,29 +190,19 @@ POLICY
 }
 
 #---------------------------------------------------------------------------------------------------------------------
-# SES
-#---------------------------------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------------------------------
 # CLOUDWATCH
 #---------------------------------------------------------------------------------------------------------------------
 
-#---------------------------------------------------------------------------------------------------------------------
+###################
 # SECURITY GROUPS
-#---------------------------------------------------------------------------------------------------------------------
+###################
 
 # The SG of Application Loadbalance
 resource "aws_security_group" "alb" {
-  name   = "SG-ALB-${var.project_name}-${var.project_env}"
-  vpc_id = "${var.vpc_id}"
-
-  tags = "${merge(
-    local.res_tag,
-    map(
-      "Name", "SG-ALB-${var.project_name}-${var.project_env}"
-    )
-  )}"
-
+  name        = "ALB-${var.name}"
   description = "Allow HTTP/HTTPS traffic from any."
+
+  vpc_id = "${var.vpc_id}"
 
   ingress {
     from_port   = 80
@@ -228,4 +224,22 @@ resource "aws_security_group" "alb" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = "${merge(var.tags, map("Name", "ALB-${var.name}"))}"
+}
+
+resource "aws_security_group" "asg" {
+  name        = "ASG-${var.name}"
+  description = "Allow 80 from ALB."
+
+  vpc_id      = "${var.vpc_id}"
+
+  ingress {
+    from_port       = 8080
+    to_port         = 8080
+    protocol        = "tcp"
+    security_groups = ["${aws_security_group.alb.id}"]
+  }
+
+  tags = "${merge(var.tags, map("Name", "ASG-${var.name}"))}"
 }

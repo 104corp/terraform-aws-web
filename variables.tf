@@ -8,6 +8,7 @@ variable "name" {
 
 variable "tags" {
   description = "The tags of resource."
+  type        = "map"
 }
 
 #############
