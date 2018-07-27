@@ -23,10 +23,12 @@ output "autoscaling_group_desired_capacity" {
   description = "The desired capacity of the Autoscaling"
   value       = "${module.autoscaling.this_autoscaling_group_desired_capacity}"
 }
+
 output "autoscaling_group_health_check_grace_period" {
   description = "The health check grace period of the Autoscaling"
   value       = "${module.autoscaling.this_autoscaling_group_health_check_grace_period}"
 }
+
 output "autoscaling_group_health_check_type" {
   description = "The health check type of the Autoscaling"
   value       = "${module.autoscaling.this_autoscaling_group_health_check_type}"

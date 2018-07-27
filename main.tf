@@ -236,7 +236,7 @@ resource "aws_security_group" "asg" {
   name        = "ASG-${var.name}"
   description = "Allow 80 from ALB."
 
-  vpc_id      = "${var.vpc_id}"
+  vpc_id = "${var.vpc_id}"
 
   ingress {
     from_port       = 8080
