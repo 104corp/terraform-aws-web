@@ -1,4 +1,4 @@
-# AWS web Terraform module
+# AWS Web Terraform module
 
 ![Build Status](https://travis-ci.com/104corp/terraform-aws-web.svg?branch=master) ![LicenseBadge](https://img.shields.io/github/license/104corp/terraform-aws-web.svg)
 
