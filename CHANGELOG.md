@@ -1,6 +1,7 @@
 ## 2018-07-27 - Release 0.0.2
 
 - modify more var name.
+- add outputs.tf
 
 ## 2018-07-25 - Release 0.0.1
 
