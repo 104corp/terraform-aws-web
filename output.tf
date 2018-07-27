@@ -9,6 +9,11 @@ output "autoscaling_group_id_arn" {
   value       = "${module.autoscaling.this_autoscaling_group_arn}"
 }
 
+output "autoscaling_group_name" {
+  description = "The name of the Autoscaling"
+  value       = "${module.autoscaling.this_autoscaling_group_name}"
+}
+
 output "autoscaling_group_default_cooldown" {
   description = "The default cooldown of the Autoscaling"
   value       = "${module.autoscaling.this_autoscaling_group_default_cooldown}"
@@ -26,6 +31,7 @@ output "autoscaling_group_health_check_type" {
   description = "The health check type of the Autoscaling"
   value       = "${module.autoscaling.this_autoscaling_group_health_check_type}"
 }
+
 output "autoscaling_group_min_size" {
   description = "The instance min size of the Autoscaling"
   value       = "${module.autoscaling.this_autoscaling_group_min_size}"
@@ -34,11 +40,6 @@ output "autoscaling_group_min_size" {
 output "autoscaling_group_max_size" {
   description = "The instance max size of the Autoscaling"
   value       = "${module.autoscaling.this_autoscaling_group_max_size}"
-}
-
-output "autoscaling_group_name" {
-  description = "The name of the Autoscaling"
-  value       = "${module.autoscaling.this_autoscaling_group_name}"
 }
 
 ### Launch Configuration
