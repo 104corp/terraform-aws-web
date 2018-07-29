@@ -12,6 +12,21 @@ variable "tags" {
 }
 
 #############
+# this module 
+#############
+
+variable "codedeploy_s3_destroy" {
+  description = "The destroy of s3 bucket for Codedeploy."
+  default     = false
+}
+
+variable "alblogs_s3_destroy" {
+  description = "The destroy of s3 bucket for ALB logs."
+  default     = false
+}
+
+
+#############
 # ASG module 
 #############
 variable "vpc_id" {

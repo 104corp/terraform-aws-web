@@ -152,8 +152,9 @@ resource "aws_iam_role_policy_attachment" "role_codedeploy" {
 ######
 
 resource "aws_s3_bucket" "codedeploy" {
-  bucket = "codedeploy-${var.name}"
-  acl    = "private"
+  bucket        = "codedeploy-${var.name}"
+  acl           = "private"
+  force_destroy = "${var.codedeploy_s3_destroy}"
 
   tags = "${var.tags}"
 }
@@ -163,6 +164,7 @@ resource "aws_s3_bucket" "codedeploy" {
 resource "aws_s3_bucket" "alblogs" {
   bucket_prefix = "alblogs-${var.name}-"
   acl           = "private"
+  force_destroy = "${var.alblogs_s3_destroy}"
 
   tags = "${var.tags}"
 }
