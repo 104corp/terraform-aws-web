@@ -16,7 +16,7 @@ variable "tags" {
 #############
 
 variable "codedeploy_s3_destroy" {
-  description = "The destroy of s3 bucket for Codedeploy."
+  description = "The destroy of s3 bucket for codedeploy."
   default     = false
 }
 
@@ -24,7 +24,6 @@ variable "alblogs_s3_destroy" {
   description = "The destroy of s3 bucket for ALB logs."
   default     = false
 }
-
 
 #############
 # ASG module 

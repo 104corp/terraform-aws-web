@@ -61,7 +61,6 @@ module "alb" {
 
   target_groups       = "${list(map("name", "ALB-${var.name}", "backend_protocol", "HTTP", "backend_port", "80"))}"
   target_groups_count = "1"
-
   target_groups_defaults = "${var.target_groups_defaults}"
 }
 
@@ -69,131 +68,6 @@ module "alb" {
 # Codedeploy module
 ####################
 
-##############
-# IAM module
-##############
-
-# Policy : ec2-to-s3-for-codedeploy
-data "template_file" "ec2-to-s3-for-codedeploy" {
-  template = "${file("${path.module}/policies/ec2-to-s3-for-codedeploy.json")}"
-
-  vars {
-    s3_arn = "${aws_s3_bucket.codedeploy.arn}"
-  }
-}
-
-resource "aws_iam_policy" "ec2-to-s3-for-codedeploy" {
-  name_prefix = "ec2-to-s3-for-codedeploy-${var.name}-"
-  description = "EC2 to S3 Bucket for Codedeploy ${var.name} access."
-
-  policy = "${data.template_file.ec2-to-s3-for-codedeploy.rendered}"
-}
-
-########
-# Roles
-########
-
-# EC2
-resource "aws_iam_role" "ec2_web" {
-  name = "EC2-${var.name}"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_instance_profile" "ec2_web_instance_profile" {
-  name = "${aws_iam_role.ec2_web.name}"
-  role = "${aws_iam_role.ec2_web.name}"
-}
-
-# Role : Codedeploy
-resource "aws_iam_role" "role_codedeploy" {
-  name = "Codedeploy"
-
-  assume_role_policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "",
-            "Effect": "Allow",
-            "Principal": {
-                "Service": [
-                    "codedeploy.amazonaws.com"
-                ]
-            },
-            "Action": "sts:AssumeRole"
-        }
-    ]
-}
-EOF
-}
-
-resource "aws_iam_role_policy_attachment" "role_codedeploy" {
-  role       = "${aws_iam_role.role_codedeploy.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
-}
-
-######
-# S3
-######
-
-resource "aws_s3_bucket" "codedeploy" {
-  bucket        = "codedeploy-${var.name}"
-  acl           = "private"
-  force_destroy = "${var.codedeploy_s3_destroy}"
-
-  tags = "${var.tags}"
-}
-
-# ALB logs with bucket policy
-
-resource "aws_s3_bucket" "alblogs" {
-  bucket_prefix = "alblogs-${var.name}-"
-  acl           = "private"
-  force_destroy = "${var.alblogs_s3_destroy}"
-
-  tags = "${var.tags}"
-}
-
-resource "aws_s3_bucket_policy" "alblogs" {
-  bucket = "${aws_s3_bucket.alblogs.id}"
-
-  policy = <<POLICY
-{
-  "Id": "Policy1429136655940",
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "Stmt1429136633762",
-      "Action": [
-        "s3:PutObject"
-      ],
-      "Effect": "Allow",
-      "Resource": "arn:aws:s3:::${aws_s3_bucket.alblogs.id}/AWSLogs/${data.aws_caller_identity.current.account_id}/*",
-      "Principal": {
-        "AWS": [
-          "582318560864"
-        ]
-      }
-    }
-  ]
-}
-POLICY
-}
 
 #---------------------------------------------------------------------------------------------------------------------
 # CLOUDWATCH
@@ -241,8 +115,8 @@ resource "aws_security_group" "asg" {
   vpc_id = "${var.vpc_id}"
 
   ingress {
-    from_port       = 8080
-    to_port         = 8080
+    from_port       = 80
+    to_port         = 80
     protocol        = "tcp"
     security_groups = ["${aws_security_group.alb.id}"]
   }
