@@ -25,6 +25,36 @@ variable "alblogs_s3_destroy" {
   default     = false
 }
 
+variable "web_server_sg_ingress_cidr_blocks" {
+  description = "The Security Group ingress CIDR blocks of ALB"
+  default     = []
+}
+
+variable "web_server_sg_egress_cidr_blocks" {
+  description = "The Security Group egress CIDR blocks of ALB"
+  default     = ["0.0.0.0/0"]
+}
+
+variable "web_server_sg_egress_rule" {
+  description = "The Security Group egress CIDR blocks of ALB"
+  default     = ["all-all"]
+}
+
+variable "web_server_sg_ingress_rule" {
+  description = "The Security Group rule ingress of web server"
+  default     = ["http-80-tcp"]
+}
+
+variable "web_server_alb_sg_ingress_cidr_blocks" {
+  description = "The Security Group ingress CIDR blocks of ALB"
+  default     = ["0.0.0.0/0"]
+}
+
+variable "web_server_alb_sg_ingress_rule" {
+  description = "The Security Group ingress CIDR blocks of ALB"
+  default     = ["all-all"]
+}
+
 #############
 # ASG module 
 #############
