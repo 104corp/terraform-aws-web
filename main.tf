@@ -86,12 +86,13 @@ module "web_server_sg" {
 
   ingress_cidr_blocks = [
     "${module.web_server_alb_sg.this_security_group_id}",
-    "${var.web_server_sg_ingress_cidr_blocks}"
+    "${var.web_server_sg_ingress_cidr_blocks}",
   ]
-  ingress_rules       = ["${var.web_server_sg_ingress_rule}"]
 
-  egress_cidr_blocks  = ["${var.web_server_sg_egress_cidr_blocks}"]
-  egress_rules        = ["${var.web_server_sg_egress_rule}"]
+  ingress_rules = ["${var.web_server_sg_ingress_rule}"]
+
+  egress_cidr_blocks = ["${var.web_server_sg_egress_cidr_blocks}"]
+  egress_rules       = ["${var.web_server_sg_egress_rule}"]
 
   tags = "${merge(var.tags, map("Name", "EC2-${var.name}"))}"
 }
@@ -115,7 +116,9 @@ module "web_server_alb_sg" {
 #   name        = "ALB-${var.name}"
 #   description = "Allow HTTP/HTTPS traffic from any."
 
+
 #   vpc_id = "${var.vpc_id}"
+
 
 #   ingress {
 #     from_port   = 80
@@ -124,12 +127,14 @@ module "web_server_alb_sg" {
 #     cidr_blocks = ["0.0.0.0/0"]
 #   }
 
+
 #   ingress {
 #     from_port   = 443
 #     to_port     = 443
 #     protocol    = "tcp"
 #     cidr_blocks = ["0.0.0.0/0"]
 #   }
+
 
 #   egress {
 #     from_port   = 0
@@ -138,14 +143,18 @@ module "web_server_alb_sg" {
 #     cidr_blocks = ["0.0.0.0/0"]
 #   }
 
+
 #   tags = "${merge(var.tags, map("Name", "ALB-${var.name}"))}"
 # }
+
 
 # resource "aws_security_group" "asg" {
 #   name        = "ASG-${var.name}"
 #   description = "Allow 80 from ALB."
 
+
 #   vpc_id = "${var.vpc_id}"
+
 
 #   ingress {
 #     from_port       = 80
@@ -154,5 +163,7 @@ module "web_server_alb_sg" {
 #     security_groups = ["${aws_security_group.alb.id}"]
 #   }
 
+
 #   tags = "${merge(var.tags, map("Name", "ASG-${var.name}"))}"
 # }
+
