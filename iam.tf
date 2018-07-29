@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "ec2_web_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "ec2_web_codedeploy_s3" {
-  role       = "${aws_iam_role.role_ec2.name}"
+  role       = "${aws_iam_role.ec2_web.name}"
   policy_arn = "${aws_iam_policy.ec2-to-s3-for-codedeploy.arn}"
 }
 
