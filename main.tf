@@ -59,15 +59,14 @@ module "alb" {
   http_tcp_listeners       = "${list(map("port", "80", "protocol", "HTTP"))}"
   http_tcp_listeners_count = "1"
 
-  target_groups       = "${list(map("name", "ALB-${var.name}", "backend_protocol", "HTTP", "backend_port", "80"))}"
-  target_groups_count = "1"
+  target_groups          = "${list(map("name", "ALB-${var.name}", "backend_protocol", "HTTP", "backend_port", "80"))}"
+  target_groups_count    = "1"
   target_groups_defaults = "${var.target_groups_defaults}"
 }
 
 ####################
 # Codedeploy module
 ####################
-
 
 #---------------------------------------------------------------------------------------------------------------------
 # CLOUDWATCH

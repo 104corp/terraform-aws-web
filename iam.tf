@@ -38,8 +38,6 @@ resource "aws_iam_instance_profile" "ec2_web_instance_profile" {
   role = "${aws_iam_role.ec2_web.name}"
 }
 
-
-
 # Role for Codedeploy
 resource "aws_iam_role" "role_codedeploy" {
   name = "Codedeploy"
