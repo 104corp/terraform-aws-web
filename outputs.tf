@@ -57,3 +57,12 @@ output "launch_configuration_name" {
 
 ### ALB
 
+output "web_sg_id" {
+  description = "The Security Group ID of Web."
+  value       = "${aws_security_group.web_server_sg.id}"
+}
+
+output "alb_sg_id" {
+  description = "The Security Group ID of ALB."
+  value       = "${aws_security_group.web_server_alb_sg.id}"
+}

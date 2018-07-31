@@ -20,8 +20,6 @@ resource "aws_s3_bucket" "alblogs" {
   tags = "${var.tags}"
 }
 
-data "aws_elb_service_account" "main" {}
-
 resource "aws_s3_bucket_policy" "alblogs" {
   bucket = "${aws_s3_bucket.alblogs.id}"
 

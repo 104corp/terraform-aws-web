@@ -23,11 +23,6 @@ resource "aws_iam_role" "ec2_web" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "ec2_web_policy" {
-  role       = "${aws_iam_role.ec2_web.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
-}
-
 resource "aws_iam_role_policy_attachment" "ec2_web_codedeploy_s3" {
   role       = "${aws_iam_role.ec2_web.name}"
   policy_arn = "${aws_iam_policy.ec2-to-s3-for-codedeploy.arn}"
@@ -70,7 +65,7 @@ resource "aws_iam_role_policy_attachment" "role_codedeploy" {
 # IAM Policy
 ##############
 
-# Policy : ec2-to-s3-for-codedeploy
+# Policy for ec2-to-s3-for-codedeploy
 data "template_file" "ec2-to-s3-for-codedeploy" {
   template = "${file("${path.module}/policies/ec2-to-s3-for-codedeploy.json")}"
 

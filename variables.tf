@@ -25,34 +25,49 @@ variable "alblogs_s3_destroy" {
   default     = false
 }
 
-variable "web_server_sg_ingress_cidr_blocks" {
-  description = "The Security Group ingress CIDR blocks of ALB"
-  default     = []
-}
-
-variable "web_server_sg_egress_cidr_blocks" {
-  description = "The Security Group egress CIDR blocks of ALB"
-  default     = ["0.0.0.0/0"]
-}
-
-variable "web_server_sg_egress_rule" {
-  description = "The Security Group egress CIDR blocks of ALB"
-  default     = ["all-all"]
-}
-
-variable "web_server_sg_ingress_rule" {
-  description = "The Security Group rule ingress of web server"
+variable "web_ingress" {
+  description = "The Security Group ingress of Web."
   default     = ["http-80-tcp"]
 }
 
-variable "web_server_alb_sg_ingress_cidr_blocks" {
-  description = "The Security Group ingress CIDR blocks of ALB"
+variable "alb_ingress" {
+  description = "The Security Group ingress of ALB."
+  default     = ["http-80-tcp", "https-443-tcp"]
+}
+
+variable "web_ingress_cidr_blocks" {
+  description = "The Security Group ingress cidr of Web."
+  default     = []
+}
+
+variable "web_ingress_source_security_group_id" {
+  description = "The Security Group ingress other security group source id of Web."
+  type        = "list"
+}
+
+variable "alb_ingress_cidr_blocks" {
+  description = "The Security Group ingress cidr of ALB."
   default     = ["0.0.0.0/0"]
 }
 
-variable "web_server_alb_sg_ingress_rule" {
-  description = "The Security Group ingress CIDR blocks of ALB"
-  default     = ["all-all"]
+variable "web_ingress_ipv6_cidr_blocks" {
+  description = "The Security Group ingress cidr of Web."
+  default     = []
+}
+
+variable "alb_ingress_ipv6_cidr_blocks" {
+  description = "The Security Group ingress cidr of ALB."
+  default     = []
+}
+
+variable "web_ingress_prefix_list_ids" {
+  description = "The Security Group ingress prefix list IDs of Web."
+  default     = []
+}
+
+variable "alb_ingress_prefix_list_ids" {
+  description = "The Security Group ingress prefix list IDs of ALB."
+  default     = []
 }
 
 #############

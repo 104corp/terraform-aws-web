@@ -18,9 +18,8 @@ These types of resources are supported:
 
 This module dependency of list:
 
-* [aws-autoscaling](https://registry.terraform.io/modules/terraform-aws-modules/autoscaling/aws/)
-* [aws-alb](https://registry.terraform.io/modules/terraform-aws-modules/alb/aws/)
-* [aws-security-group](https://registry.terraform.io/modules/terraform-aws-modules/security-group/aws/)
+* [autoscaling](https://registry.terraform.io/modules/terraform-aws-modules/autoscaling/aws/)
+* [alb](https://registry.terraform.io/modules/terraform-aws-modules/alb/aws/)
 
 ## Usage
 
@@ -71,8 +70,6 @@ gem install bundler; bundle install
 ## Authors
 
 Module is maintained by [104corp](https://github.com/104corp).
-
-basic fork of [Anton Babenko](https://github.com/antonbabenko)
 
 ## License
 

@@ -7,6 +7,7 @@ terraform {
 #########
 
 data "aws_caller_identity" "current" {}
+data "aws_elb_service_account" "main" {}
 
 #####################
 # Autoscaling module
@@ -23,7 +24,7 @@ module "autoscaling" {
   lc_name              = "${var.name}"
   image_id             = "${var.image_id}"
   instance_type        = "${var.instance_type}"
-  security_groups      = ["${module.web_server_sg.this_security_group_id}"]
+  security_groups      = ["${aws_security_group.web_server_sg.id}"]
   iam_instance_profile = "${aws_iam_instance_profile.ec2_web_instance_profile.arn}"
   target_group_arns    = "${module.alb.target_group_arns}"
 
@@ -45,8 +46,8 @@ module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "3.4.0"
 
-  load_balancer_name        = "${var.name}"
-  security_groups           = ["${module.web_server_alb_sg.this_security_group_id}"]
+  load_balancer_name        = "ALB-${var.name}"
+  security_groups           = ["${aws_security_group.web_server_alb_sg.id}"]
   log_bucket_name           = "${aws_s3_bucket.alblogs.id}"
   subnets                   = "${var.subnet_ids_alb}"
   tags                      = "${var.tags}"
@@ -59,7 +60,7 @@ module "alb" {
   http_tcp_listeners       = "${list(map("port", "80", "protocol", "HTTP"))}"
   http_tcp_listeners_count = "1"
 
-  target_groups          = "${list(map("name", "ALB-${var.name}", "backend_protocol", "HTTP", "backend_port", "80"))}"
+  target_groups          = "${list(map("name", "ALB-TG-${var.name}", "backend_protocol", "HTTP", "backend_port", "80"))}"
   target_groups_count    = "1"
   target_groups_defaults = "${var.target_groups_defaults}"
 }
@@ -76,94 +77,84 @@ module "alb" {
 # Security Groups module
 #########################
 
-module "web_server_sg" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "2.1.0"
-
-  name        = "EC2-${var.name}"
+resource "aws_security_group" "web_server_sg" {
+  name_prefix = "EC2-${var.name}-"
   description = "Allow traffic from ALB-${var.name} with HTTP ports open within VPC"
+
   vpc_id      = "${var.vpc_id}"
 
-  ingress_cidr_blocks = [
-    "${module.web_server_alb_sg.this_security_group_id}",
-    "${var.web_server_sg_ingress_cidr_blocks}",
-  ]
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-  ingress_rules = ["${var.web_server_sg_ingress_rule}"]
-
-  egress_cidr_blocks = ["${var.web_server_sg_egress_cidr_blocks}"]
-  egress_rules       = ["${var.web_server_sg_egress_rule}"]
+  lifecycle {
+    create_before_destroy = true
+  }
 
   tags = "${merge(var.tags, map("Name", "EC2-${var.name}"))}"
 }
 
-module "web_server_alb_sg" {
-  source  = "terraform-aws-modules/security-group/aws"
-  version = "2.1.0"
-
-  name        = "ALB-${var.name}"
+resource "aws_security_group" "web_server_alb_sg" {
+  name_prefix = "ALB-${var.name}-"
   description = "Allow traffic with HTTP and HTTPS ports from any."
   vpc_id      = "${var.vpc_id}"
 
-  ingress_cidr_blocks = ["${var.web_server_alb_sg_ingress_cidr_blocks}"]
-  ingress_rules       = ["${var.web_server_alb_sg_ingress_rule}"]
+  lifecycle {
+    create_before_destroy = true
+  }
 
   tags = "${merge(var.tags, map("Name", "ALB-${var.name}"))}"
 }
 
-# The SG of Application Loadbalance
-# resource "aws_security_group" "alb" {
-#   name        = "ALB-${var.name}"
-#   description = "Allow HTTP/HTTPS traffic from any."
+resource "aws_security_group_rule" "web_ingress_with_cidr_blocks" {
+  count = "${length(var.web_ingress_cidr_blocks)}"
 
+  security_group_id = "${aws_security_group.web_server_alb_sg.id}"
+  type              = "ingress"
 
-#   vpc_id = "${var.vpc_id}"
+  cidr_blocks      = ["${var.web_ingress_cidr_blocks}"]
+  ipv6_cidr_blocks = ["${var.web_ingress_ipv6_cidr_blocks}"]
+  prefix_list_ids  = ["${var.web_ingress_prefix_list_ids}"]
+  description      = "${element(var.rules[var.web_ingress[count.index]], 3)}"
 
+  from_port = "${element(var.rules[var.web_ingress[count.index]], 0)}"
+  to_port   = "${element(var.rules[var.web_ingress[count.index]], 1)}"
+  protocol  = "${element(var.rules[var.web_ingress[count.index]], 2)}"
+}
 
-#   ingress {
-#     from_port   = 80
-#     to_port     = 80
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+resource "aws_security_group_rule" "web_ingress_with_source_security_group_id" {
+  count = "${length(var.web_ingress_source_security_group_id)}"
 
+  security_group_id = "${aws_security_group.web_server_sg.id}"
+  type              = "ingress"
 
-#   ingress {
-#     from_port   = 443
-#     to_port     = 443
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+  source_security_group_id = "${lookup(var.web_ingress_source_security_group_id[count.index], "source_security_group_id")}"
 
+  ipv6_cidr_blocks  = ["${var.web_ingress_ipv6_cidr_blocks}"]
+  prefix_list_ids   = ["${var.web_ingress_prefix_list_ids}"]
+  description       = "${lookup(var.web_ingress_source_security_group_id[count.index], "description",element(var.rules[lookup(var.web_ingress_source_security_group_id[count.index], "rule", "_")], 3))}"
 
-#   egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+  from_port = "${lookup(var.web_ingress_source_security_group_id[count.index], "from_port", element(var.rules[lookup(var.web_ingress_source_security_group_id[count.index], "rule", "_")], 0))}"
+  to_port   = "${lookup(var.web_ingress_source_security_group_id[count.index], "to_port", element(var.rules[lookup(var.web_ingress_source_security_group_id[count.index], "rule", "_")], 1))}"
+  protocol  = "${lookup(var.web_ingress_source_security_group_id[count.index], "protocol", element(var.rules[lookup(var.web_ingress_source_security_group_id[count.index], "rule", "_")], 2))}"
+}
 
+resource "aws_security_group_rule" "alb_ingress_with_cidr_blocks" {
+  count = "${length(var.alb_ingress)}"
 
-#   tags = "${merge(var.tags, map("Name", "ALB-${var.name}"))}"
-# }
+  security_group_id = "${aws_security_group.web_server_alb_sg.id}"
+  type              = "ingress"
 
+  cidr_blocks      = ["${var.alb_ingress_cidr_blocks}"]
+  ipv6_cidr_blocks = ["${var.alb_ingress_ipv6_cidr_blocks}"]
+  prefix_list_ids  = ["${var.alb_ingress_prefix_list_ids}"]
+  description      = "${element(var.rules[var.alb_ingress[count.index]], 3)}"
 
-# resource "aws_security_group" "asg" {
-#   name        = "ASG-${var.name}"
-#   description = "Allow 80 from ALB."
-
-
-#   vpc_id = "${var.vpc_id}"
-
-
-#   ingress {
-#     from_port       = 80
-#     to_port         = 80
-#     protocol        = "tcp"
-#     security_groups = ["${aws_security_group.alb.id}"]
-#   }
-
-
-#   tags = "${merge(var.tags, map("Name", "ASG-${var.name}"))}"
-# }
+  from_port = "${element(var.rules[var.alb_ingress[count.index]], 0)}"
+  to_port   = "${element(var.rules[var.alb_ingress[count.index]], 1)}"
+  protocol  = "${element(var.rules[var.alb_ingress[count.index]], 2)}"
+}
 
