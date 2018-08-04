@@ -1,9 +1,14 @@
 ####################
 #  general variables
-#####################
+####################
 
 variable "name" {
   description = "The name of project."
+}
+
+variable "create" {
+  description = "Whether to create security group and all rules"
+  default     = false
 }
 
 variable "tags" {
@@ -15,14 +20,29 @@ variable "tags" {
 # this module 
 #############
 
+variable "travisci_enable" {
+  description = "The travis-ci enable for autoscaling."
+  default     = false
+}
+
+variable "travisci_user_destroy" {
+  description = "The travis-ci iam user destroy."
+  default     = false
+}
+
+variable "codedeploy_enable" {
+  description = "The codedeploy enable for autoscaling."
+  default     = false
+}
+
 variable "codedeploy_s3_destroy" {
   description = "The destroy of s3 bucket for codedeploy."
-  default     = false
+  default     = true
 }
 
 variable "alblogs_s3_destroy" {
   description = "The destroy of s3 bucket for ALB logs."
-  default     = false
+  default     = true
 }
 
 variable "web_ingress" {
@@ -42,7 +62,12 @@ variable "web_ingress_cidr_blocks" {
 
 variable "web_ingress_source_security_group_id" {
   description = "The Security Group ingress other security group source id of Web."
-  type        = "list"
+  default     = []
+}
+
+variable "web_number_of_ingress_source_security_group_id" {
+  description = "The Security Group ingress number other security group source id of Web."
+  default     = "0"
 }
 
 variable "alb_ingress_cidr_blocks" {

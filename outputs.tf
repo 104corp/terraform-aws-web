@@ -66,3 +66,21 @@ output "alb_sg_id" {
   description = "The Security Group ID of ALB."
   value       = "${aws_security_group.web_server_alb_sg.id}"
 }
+
+### Travis CI
+output "travisci_user_arn" {
+  description = "The IAM user arn of Travis CI."
+  value       = "${aws_iam_user.travisci_web.*.arn}"
+}
+
+output "travisci_user_name" {
+  description = "The IAM user name of Travis CI."
+  value       = "${aws_iam_user.travisci_web.*.name}"
+}
+
+output "travisci_user_unique_id" {
+  description = "The IAM user unique id of Travis CI."
+  value       = "${aws_iam_user.travisci_web.*.unique_id}"
+}
+
+### Codedeploy

@@ -65,14 +65,6 @@ module "alb" {
   target_groups_defaults = "${var.target_groups_defaults}"
 }
 
-####################
-# Codedeploy module
-####################
-
-#---------------------------------------------------------------------------------------------------------------------
-# CLOUDWATCH
-#---------------------------------------------------------------------------------------------------------------------
-
 #########################
 # Security Groups module
 #########################
@@ -126,7 +118,7 @@ resource "aws_security_group_rule" "web_ingress_with_cidr_blocks" {
 }
 
 resource "aws_security_group_rule" "web_ingress_with_source_security_group_id" {
-  count = "${length(var.web_ingress_source_security_group_id)}"
+  count = "${var.web_number_of_ingress_source_security_group_id}"
 
   security_group_id = "${aws_security_group.web_server_sg.id}"
   type              = "ingress"
@@ -135,7 +127,7 @@ resource "aws_security_group_rule" "web_ingress_with_source_security_group_id" {
 
   ipv6_cidr_blocks  = ["${var.web_ingress_ipv6_cidr_blocks}"]
   prefix_list_ids   = ["${var.web_ingress_prefix_list_ids}"]
-  description       = "${lookup(var.web_ingress_source_security_group_id[count.index], "description",element(var.rules[lookup(var.web_ingress_source_security_group_id[count.index], "rule", "_")], 3))}"
+  description       = "${lookup(var.web_ingress_source_security_group_id[count.index], "description", "Ingress Rule")}"
 
   from_port = "${lookup(var.web_ingress_source_security_group_id[count.index], "from_port", element(var.rules[lookup(var.web_ingress_source_security_group_id[count.index], "rule", "_")], 0))}"
   to_port   = "${lookup(var.web_ingress_source_security_group_id[count.index], "to_port", element(var.rules[lookup(var.web_ingress_source_security_group_id[count.index], "rule", "_")], 1))}"

@@ -1,3 +1,7 @@
+## 2018-08-01 - Release 0.0.4
+
+- refactor security group rule.
+
 ## 2018-07-29 - Release 0.0.3
 
 - refactor port mapping and arch.

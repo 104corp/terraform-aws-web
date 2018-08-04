@@ -4,6 +4,8 @@
 
 # bucket for Codedeploy source code.
 resource "aws_s3_bucket" "codedeploy" {
+  count = "${var.codedeploy_enable ? 1 : 0}"
+
   bucket        = "codedeploy-deployment-${var.name}"
   acl           = "private"
   force_destroy = "${var.codedeploy_s3_destroy}"
