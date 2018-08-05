@@ -1,12 +1,13 @@
 variable "rules" {
   description = "Map of known security group rules (define as 'name' = ['from port', 'to port', 'protocol', 'description'])"
   type        = "map"
+
   default = {
     # SSH
-    ssh-tcp       = [22, 22, "tcp", "SSH"]
-    
+    ssh-tcp = [22, 22, "tcp", "SSH"]
+
     # HTTP
-    http-80-tcp   = [80, 80, "tcp", "HTTP"]
+    http-80-tcp = [80, 80, "tcp", "HTTP"]
 
     # HTTPS
     https-443-tcp = [443, 443, "tcp", "HTTPS"]
@@ -22,6 +23,7 @@ variable "rules" {
 
 variable "auto_groups" {
   description = "Map of groups of security group rules to use to generate modules (see update_groups.sh)"
+
   default = {
     ssh = {
       ingress_rules     = ["ssh-tcp"]

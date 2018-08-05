@@ -73,7 +73,7 @@ resource "aws_security_group" "web_server_sg" {
   name_prefix = "EC2-${var.name}-"
   description = "Allow traffic from ALB-${var.name} with HTTP ports open within VPC"
 
-  vpc_id      = "${var.vpc_id}"
+  vpc_id = "${var.vpc_id}"
 
   egress {
     from_port   = 0
@@ -125,9 +125,9 @@ resource "aws_security_group_rule" "web_ingress_with_source_security_group_id" {
 
   source_security_group_id = "${lookup(var.web_ingress_source_security_group_id[count.index], "source_security_group_id")}"
 
-  ipv6_cidr_blocks  = ["${var.web_ingress_ipv6_cidr_blocks}"]
-  prefix_list_ids   = ["${var.web_ingress_prefix_list_ids}"]
-  description       = "${lookup(var.web_ingress_source_security_group_id[count.index], "description", "Ingress Rule")}"
+  ipv6_cidr_blocks = ["${var.web_ingress_ipv6_cidr_blocks}"]
+  prefix_list_ids  = ["${var.web_ingress_prefix_list_ids}"]
+  description      = "${lookup(var.web_ingress_source_security_group_id[count.index], "description", "Ingress Rule")}"
 
   from_port = "${lookup(var.web_ingress_source_security_group_id[count.index], "from_port", element(var.rules[lookup(var.web_ingress_source_security_group_id[count.index], "rule", "_")], 0))}"
   to_port   = "${lookup(var.web_ingress_source_security_group_id[count.index], "to_port", element(var.rules[lookup(var.web_ingress_source_security_group_id[count.index], "rule", "_")], 1))}"
@@ -149,4 +149,3 @@ resource "aws_security_group_rule" "alb_ingress_with_cidr_blocks" {
   to_port   = "${element(var.rules[var.alb_ingress[count.index]], 1)}"
   protocol  = "${element(var.rules[var.alb_ingress[count.index]], 2)}"
 }
-

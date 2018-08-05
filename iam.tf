@@ -58,7 +58,7 @@ resource "aws_iam_instance_profile" "ec2_web_instance_profile" {
 # Role for Codedeploy
 resource "aws_iam_role" "role_codedeploy" {
   count = "${var.codedeploy_enable ? 1 : 0}"
-  
+
   name = "Codedeploy"
 
   assume_role_policy = <<EOF
@@ -141,9 +141,12 @@ resource "aws_iam_policy" "ec2-to-s3-for-codedeploy" {
 # IAM Access Key
 #################
 
+
 # resource "aws_iam_access_key" "travisci_access_key" {
 #   count = "${var.travisci_enable ? 1 : 0}"
+
 
 #   user    = "${aws_iam_user.travisci_web.name}"
 #   pgp_key = "keybase:some_person_that_exists"
 # }
+
