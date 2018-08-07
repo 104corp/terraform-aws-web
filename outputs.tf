@@ -55,18 +55,6 @@ output "launch_configuration_name" {
   value       = "${module.autoscaling.this_launch_configuration_name}"
 }
 
-### ALB
-
-output "web_sg_id" {
-  description = "The Security Group ID of Web."
-  value       = "${aws_security_group.web_server_sg.id}"
-}
-
-output "alb_sg_id" {
-  description = "The Security Group ID of ALB."
-  value       = "${aws_security_group.web_server_alb_sg.id}"
-}
-
 ### Travis CI
 output "travisci_user_arn" {
   description = "The IAM user arn of Travis CI."
@@ -85,3 +73,13 @@ output "travisci_user_unique_id" {
 
 ### Codedeploy
 
+### Security Groups
+output "web_sg_id" {
+  description = "The Security Group ID of Web."
+  value       = "${aws_security_group.web_server_sg.id}"
+}
+
+output "alb_sg_id" {
+  description = "The Security Group ID of ALB."
+  value       = "${aws_security_group.web_server_alb_sg.id}"
+}

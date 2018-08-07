@@ -95,6 +95,26 @@ variable "alb_ingress_prefix_list_ids" {
   default     = []
 }
 
+variable "codedeploy_deployment_config_name" {
+  description = "The deployment config name of codedeploy."
+  default     = "CodeDeployDefault.OneAtATime"
+}
+
+variable "codedeploy_deployment_style" {
+  description = "The deployment style of codedeploy."
+  type        = "map"
+
+  default = {
+    deployment_option = "WITH_TRAFFIC_CONTROL"
+    deployment_type   = "IN_PLACE"
+  }
+}
+
+variable "codedeploy_blue_green_deployment_config" {
+  description = "The deployment config with blue / green of codedeploy."
+  default     = []
+}
+
 #############
 # ASG module 
 #############
@@ -111,7 +131,7 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "subnet_ids_ec2" {
+variable "ec2_subnet_ids" {
   description = "The ids of subnet for EC2."
   type        = "list"
 }
@@ -139,7 +159,18 @@ variable "asg_health_check_type" {
 #############
 # ALB module 
 #############
-variable "https_listeners" {
+
+# variable "load_balancer_internal_enable" {
+#   description = "The internal access of ALB."
+#   default     = false
+# }
+
+# variable "load_balancer_internal_enable" {
+#   description = "The internal access of ALB."
+#   default     = false
+# }
+
+variable "alb_https_listeners" {
   description = "A list of maps describing the HTTPS listeners for this ALB. Required key/values: port, certificate_arn. Optional key/values: ssl_policy."
   type        = "map"
 
@@ -150,12 +181,12 @@ variable "https_listeners" {
   }
 }
 
-variable "https_listeners_count" {
+variable "alb_https_listeners_count" {
   description = "A manually provided count/length of the https_listeners list of maps since the list cannot be computed.."
   default     = "0"
 }
 
-variable "subnet_ids_alb" {
+variable "alb_subnet_ids" {
   description = "The ids of subnet for ALB."
   type        = "list"
 }
@@ -165,7 +196,7 @@ variable "load_balancer_is_internal" {
   default     = false
 }
 
-variable "target_groups_defaults" {
+variable "alb_target_groups_defaults" {
   description = "Default values for target groups as defined by the list of maps."
   type        = "map"
 

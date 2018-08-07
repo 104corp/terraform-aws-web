@@ -84,7 +84,7 @@ resource "aws_iam_role_policy_attachment" "role_codedeploy" {
   count = "${var.codedeploy_enable ? 1 : 0}"
 
   role       = "${aws_iam_role.role_codedeploy.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
 }
 
 ##############
@@ -141,12 +141,10 @@ resource "aws_iam_policy" "ec2-to-s3-for-codedeploy" {
 # IAM Access Key
 #################
 
+resource "aws_iam_access_key" "travisci_access_key" {
+  count = "${var.travisci_enable ? 1 : 0}"
 
-# resource "aws_iam_access_key" "travisci_access_key" {
-#   count = "${var.travisci_enable ? 1 : 0}"
+  user = "${aws_iam_user.travisci_web.name}"
 
-
-#   user    = "${aws_iam_user.travisci_web.name}"
-#   pgp_key = "keybase:some_person_that_exists"
-# }
-
+  # pgp_key = "keybase:some_person_that_exists"
+}

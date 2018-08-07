@@ -17,9 +17,11 @@ before_install:
   - "./terraform get"
 script:
   # Test case
-  # 1. tflint
+  # 1. fmt
+  - "./terraform fmt"
+  # 2. tflint
   - "./tflint"
-  # 2. terraform init and fmt
+  # 3. terraform init and fmt
   - "scripts/test_terraform.sh"
     
 notifications:
