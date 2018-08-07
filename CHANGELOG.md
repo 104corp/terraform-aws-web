@@ -1,3 +1,7 @@
+## 2018-08-08 - Release 0.0.5
+
+- add support Travis CI and Codedeploy.
+
 ## 2018-08-01 - Release 0.0.4
 
 - refactor security group rule.
