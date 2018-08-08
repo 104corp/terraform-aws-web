@@ -1,6 +1,7 @@
-## 2018-08-08 - Release 0.0.5
+## 2018-08-08 - Release 0.0.5 and 0.0.6
 
 - add support Travis CI and Codedeploy.
+- add output more iam resource.
 
 ## 2018-08-01 - Release 0.0.4
 
