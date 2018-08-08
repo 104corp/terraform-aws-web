@@ -2,14 +2,9 @@
 #  general variables
 ####################
 
-variable "name" {
-  description = "The name of project."
-}
+variable "name" { description = "The name of project." }
 
-variable "create" {
-  description = "Whether to create security group and all rules"
-  default     = false
-}
+variable "env" { description = "The environment of project." }
 
 variable "tags" {
   description = "The tags of resource."
@@ -121,25 +116,91 @@ variable "autoscaling_schedule_enable" {
 }
 
 variable "autoscaling_schedule" {
-  description = "A list of instance schedule for autoscaling."
+  description = "A list of instance schedule for autoscaling. default a 5x8 work week with online AM 08:00 and offline 20:00, saturday and sunday is holiday."
   type        = "list"
   default     = [
-    # {
-    #   action_name      = "monday-online"
-    #   min_size         = 0
-    #   max_size         = 1
-    #   desired_capacity = 1
-    #   start_time       = "2018-08-08T00:00:00Z"
-    #   recurrence       = "0 8 * * 1"
-    # },
-    # {
-    #   action_name      = "monday-offline"
-    #   min_size         = 0
-    #   max_size         = 0
-    #   desired_capacity = 0
-    #   start_time       = "2018-08-08T00:00:00Z"
-    #   recurrence       = "0 20 * * 1"
-    # }
+    # online days
+    {
+      action_name      = "monday-online"
+      min_size         = 0
+      max_size         = 1
+      desired_capacity = 1
+      start_time       = "2018-08-08T00:00:00Z"
+      recurrence       = "0 8 * * 1"
+    },
+    {
+      action_name      = "tuesday-online"
+      min_size         = 0
+      max_size         = 1
+      desired_capacity = 1
+      start_time       = "2018-08-08T00:00:00Z"
+      recurrence       = "0 8 * * 2"
+    },
+    {
+      action_name      = "wednesday-online"
+      min_size         = 0
+      max_size         = 1
+      desired_capacity = 1
+      start_time       = "2018-08-08T00:00:00Z"
+      recurrence       = "0 8 * * 3"
+    },
+    {
+      action_name      = "thursday-online"
+      min_size         = 0
+      max_size         = 1
+      desired_capacity = 1
+      start_time       = "2018-08-08T00:00:00Z"
+      recurrence       = "0 8 * * 4"
+    },
+    {
+      action_name      = "friday-online"
+      min_size         = 0
+      max_size         = 1
+      desired_capacity = 1
+      start_time       = "2018-08-08T00:00:00Z"
+      recurrence       = "0 8 * * 5"
+    },
+    # offline days
+    {
+      action_name      = "monday-offline"
+      min_size         = 0
+      max_size         = 0
+      desired_capacity = 0
+      start_time       = "2018-08-08T00:00:00Z"
+      recurrence       = "0 20 * * 1"
+    },
+    {
+      action_name      = "tuesday-offline"
+      min_size         = 0
+      max_size         = 0
+      desired_capacity = 0
+      start_time       = "2018-08-08T00:00:00Z"
+      recurrence       = "0 20 * * 2"
+    },
+    {
+      action_name      = "wednesday-offline"
+      min_size         = 0
+      max_size         = 0
+      desired_capacity = 0
+      start_time       = "2018-08-08T00:00:00Z"
+      recurrence       = "0 20 * * 3"
+    },
+    {
+      action_name      = "thursday-offline"
+      min_size         = 0
+      max_size         = 0
+      desired_capacity = 0
+      start_time       = "2018-08-08T00:00:00Z"
+      recurrence       = "0 20 * * 4"
+    },
+    {
+      action_name      = "friday-offline"
+      min_size         = 0
+      max_size         = 0
+      desired_capacity = 0
+      start_time       = "2018-08-08T00:00:00Z"
+      recurrence       = "0 20 * * 4"
+    },
   ]
 }
 
