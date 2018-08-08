@@ -1,3 +1,7 @@
+## 2018-08-09 - Release 0.0.7
+
+- add `env` variable and default schedule 5x8.
+
 ## 2018-08-08 - Release 0.0.5 and 0.0.6
 
 - add support Travis CI and Codedeploy.
