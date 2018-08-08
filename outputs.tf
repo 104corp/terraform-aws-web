@@ -55,7 +55,12 @@ output "launch_configuration_name" {
   value       = "${module.autoscaling.this_launch_configuration_name}"
 }
 
-### Travis CI
+
+### Codedeploy
+
+## IAM
+
+### Travis CI user
 output "travisci_user_arn" {
   description = "The IAM user arn of Travis CI."
   value       = "${aws_iam_user.travisci_web.*.arn}"
@@ -71,7 +76,39 @@ output "travisci_user_unique_id" {
   value       = "${aws_iam_user.travisci_web.*.unique_id}"
 }
 
-### Codedeploy
+### Web role
+
+output "web_role_arn" {
+  description = "A string of IAM Role arn for Web."
+  value       = "${aws_iam_role.ec2_web.*.arn}"
+}
+
+output "web_role_name" {
+  description = "A string of IAM Role name for Web."
+  value       = "${aws_iam_role.ec2_web.*.name}"
+}
+
+output "web_role_unique_id" {
+  description = "A string IAM Role unique id for Web."
+  value       = "${aws_iam_role.ec2_web.*.unique_id}"
+}
+
+### Codedeploy role
+
+output "codedeploy_role_arn" {
+  description = "A string of IAM Role arn for codedeploy."
+  value       = "${aws_iam_role.role_codedeploy.*.arn}"
+}
+
+output "codedeploy_role_name" {
+  description = "A string of IAM Role name for codedeploy."
+  value       = "${aws_iam_role.role_codedeploy.*.name}"
+}
+
+output "codedeploy_role_unique_id" {
+  description = "A string IAM Role unique id for codedeploy."
+  value       = "${aws_iam_role.role_codedeploy.*.unique_id}"
+}
 
 ### Security Groups
 output "web_sg_id" {

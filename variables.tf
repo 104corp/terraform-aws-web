@@ -36,72 +36,72 @@ variable "codedeploy_enable" {
 }
 
 variable "codedeploy_s3_destroy" {
-  description = "The destroy of s3 bucket for codedeploy."
+  description = "A boolean of destroy s3 bucket for codedeploy."
   default     = true
 }
 
 variable "alblogs_s3_destroy" {
-  description = "The destroy of s3 bucket for ALB logs."
+  description = "A boolean of destroy s3 bucket for ALB logs."
   default     = true
 }
 
 variable "web_ingress" {
-  description = "The Security Group ingress of Web."
+  description = "A list of Security Group ingress for Web."
   default     = ["http-80-tcp"]
 }
 
 variable "alb_ingress" {
-  description = "The Security Group ingress of ALB."
+  description = "A list of Security Group ingress for ALB."
   default     = ["http-80-tcp", "https-443-tcp"]
 }
 
 variable "web_ingress_cidr_blocks" {
-  description = "The Security Group ingress cidr of Web."
+  description = "A list of Security Group ingress cidr for Web."
   default     = []
 }
 
 variable "web_ingress_source_security_group_id" {
-  description = "The Security Group ingress other security group source id of Web."
+  description = "A list of Security Group ingress other security group source id for Web."
   default     = []
 }
 
 variable "web_number_of_ingress_source_security_group_id" {
-  description = "The Security Group ingress number other security group source id of Web."
+  description = "A string of Security Group ingress number other security group source id for Web."
   default     = "0"
 }
 
 variable "alb_ingress_cidr_blocks" {
-  description = "The Security Group ingress cidr of ALB."
+  description = "A list of Security Group ingress cidr for ALB."
   default     = ["0.0.0.0/0"]
 }
 
 variable "web_ingress_ipv6_cidr_blocks" {
-  description = "The Security Group ingress cidr of Web."
+  description = "A list of Security Group ingress cidr for Web."
   default     = []
 }
 
 variable "alb_ingress_ipv6_cidr_blocks" {
-  description = "The Security Group ingress cidr of ALB."
+  description = "A list of Security Group ingress cidr for ALB."
   default     = []
 }
 
 variable "web_ingress_prefix_list_ids" {
-  description = "The Security Group ingress prefix list IDs of Web."
+  description = "A list of Security Group ingress prefix list IDs for Web."
   default     = []
 }
 
 variable "alb_ingress_prefix_list_ids" {
-  description = "The Security Group ingress prefix list IDs of ALB."
+  description = "A list of Security Group ingress prefix list IDs for ALB."
   default     = []
 }
 
 variable "codedeploy_deployment_config_name" {
-  description = "The deployment config name of codedeploy."
+  description = "A string of deployment config name for codedeploy."
   default     = "CodeDeployDefault.OneAtATime"
 }
 
 variable "codedeploy_deployment_style" {
-  description = "The deployment style of codedeploy."
+  description = "A map of deployment style for codedeploy."
   type        = "map"
 
   default = {
@@ -111,8 +111,36 @@ variable "codedeploy_deployment_style" {
 }
 
 variable "codedeploy_blue_green_deployment_config" {
-  description = "The deployment config with blue / green of codedeploy."
+  description = "A list of deployment config with blue / green for codedeploy."
   default     = []
+}
+
+variable "autoscaling_schedule_enable" {
+  description = "A boolean of instance schedule enable for autoscaling."
+  default     = false
+}
+
+variable "autoscaling_schedule" {
+  description = "A list of instance schedule for autoscaling."
+  type        = "list"
+  default     = [
+    # {
+    #   action_name      = "monday-online"
+    #   min_size         = 0
+    #   max_size         = 1
+    #   desired_capacity = 1
+    #   start_time       = "2018-08-08T00:00:00Z"
+    #   recurrence       = "0 8 * * 1"
+    # },
+    # {
+    #   action_name      = "monday-offline"
+    #   min_size         = 0
+    #   max_size         = 0
+    #   desired_capacity = 0
+    #   start_time       = "2018-08-08T00:00:00Z"
+    #   recurrence       = "0 20 * * 1"
+    # }
+  ]
 }
 
 #############

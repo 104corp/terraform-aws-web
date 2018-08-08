@@ -38,6 +38,19 @@ module "autoscaling" {
   wait_for_capacity_timeout = 0
 }
 
+resource "aws_autoscaling_schedule" "web" {
+  count = "${var.autoscaling_schedule_enable ? length(var.autoscaling_schedule) : 0}"
+
+  scheduled_action_name  = "${lookup(var.autoscaling_schedule[count.index], "action_name", "")}"
+  min_size               = "${lookup(var.autoscaling_schedule[count.index], "min_size", 0)}"
+  max_size               = "${lookup(var.autoscaling_schedule[count.index], "max_size", 0)}"
+  desired_capacity       = "${lookup(var.autoscaling_schedule[count.index], "desired_capacity", 0)}"
+  start_time             = "${lookup(var.autoscaling_schedule[count.index], "start_time", "1999-00-00T00:00:00Z")}"
+  end_time               = "${lookup(var.autoscaling_schedule[count.index], "end_time", "3000-08-08T00:00:00Z")}"
+  recurrence             = "${lookup(var.autoscaling_schedule[count.index], "recurrence", "")}"
+  autoscaling_group_name = "${module.autoscaling.this_autoscaling_group_name}"
+}
+
 #########################
 # ALB module
 #########################
