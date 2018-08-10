@@ -38,6 +38,15 @@ module "autoscaling" {
   wait_for_capacity_timeout = 0
 }
 
+resource "random_integer" "leading_time" {
+  min     = 1
+  max     = 100
+}
+
+locals {
+  schedule_start_time = "${var.schedule_valid_time != "" ? var.schedule_valid_time : timeadd(timestamp(), var.schedule_valid_time_delay)}"
+}
+
 resource "aws_autoscaling_schedule" "web" {
   count = "${var.autoscaling_schedule_enable ? length(var.autoscaling_schedule) : 0}"
 
@@ -45,7 +54,7 @@ resource "aws_autoscaling_schedule" "web" {
   min_size               = "${lookup(var.autoscaling_schedule[count.index], "min_size", 0)}"
   max_size               = "${lookup(var.autoscaling_schedule[count.index], "max_size", 0)}"
   desired_capacity       = "${lookup(var.autoscaling_schedule[count.index], "desired_capacity", 0)}"
-  start_time             = "${lookup(var.autoscaling_schedule[count.index], "start_time", "1999-00-00T00:00:00Z")}"
+  start_time             = "${lookup(var.autoscaling_schedule[count.index], "start_time", "${local.schedule_start_time}")}"
   end_time               = "${lookup(var.autoscaling_schedule[count.index], "end_time", "3000-08-08T00:00:00Z")}"
   recurrence             = "${lookup(var.autoscaling_schedule[count.index], "recurrence", "")}"
   autoscaling_group_name = "${module.autoscaling.this_autoscaling_group_name}"

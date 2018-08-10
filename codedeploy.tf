@@ -12,7 +12,7 @@ resource "aws_codedeploy_deployment_group" "web" {
   count = "${var.codedeploy_enable ? 1 : 0}"
 
   app_name              = "${aws_codedeploy_app.web.name}"
-  deployment_group_name = "${var.name}"
+  deployment_group_name = "${var.env}"
   service_role_arn      = "${aws_iam_role.role_codedeploy.arn}"
 
   deployment_style = ["${var.codedeploy_deployment_style}"]
