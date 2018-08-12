@@ -207,18 +207,16 @@ variable "autoscaling_schedule" {
 #############
 # ASG module 
 #############
-variable "vpc_id" {
-  description = "The id of VPC."
-}
+variable "vpc_id" { description = "The id of VPC." }
 
-variable "image_id" {
-  description = "The AMI ID of launchconfig."
-}
+variable "image_id" { description = "The AMI ID of launchconfig." }
 
 variable "instance_type" {
   description = "The instance_type of launchconfig."
   default     = "t2.micro"
 }
+
+variable "key_name" { description = "The key pair name of launchconfig." }
 
 variable "ec2_subnet_ids" {
   description = "The ids of subnet for EC2."
