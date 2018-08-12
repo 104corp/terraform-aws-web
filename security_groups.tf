@@ -18,7 +18,7 @@ resource "aws_security_group" "web_server_sg" {
     create_before_destroy = true
   }
 
-  tags = "${merge(var.tags, map("Name", "EC2-${var.name}"))}"
+  tags = "${merge(var.tags, map("Name", "${var.name}-EC2"))}"
 }
 
 resource "aws_security_group" "web_server_alb_sg" {
@@ -30,7 +30,7 @@ resource "aws_security_group" "web_server_alb_sg" {
     create_before_destroy = true
   }
 
-  tags = "${merge(var.tags, map("Name", "ALB-${var.name}"))}"
+  tags = "${merge(var.tags, map("Name", "${var.name}-ALB"))}"
 }
 
 resource "aws_security_group_rule" "web_ingress_with_cidr_blocks" {
