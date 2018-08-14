@@ -26,6 +26,13 @@ resource "aws_security_group" "web_server_alb_sg" {
   description = "Allow traffic with HTTP and HTTPS ports from any."
   vpc_id      = "${var.vpc_id}"
 
+    egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   lifecycle {
     create_before_destroy = true
   }
