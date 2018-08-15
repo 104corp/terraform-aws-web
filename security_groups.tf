@@ -2,7 +2,7 @@
 # Security Groups module
 #########################
 resource "aws_security_group" "web_server_sg" {
-  name_prefix = "EC2-${var.name}-"
+  name_prefix = "${var.name}-ec2-"
   description = "Allow traffic from ALB-${var.name} with HTTP ports open within VPC"
 
   vpc_id = "${var.vpc_id}"
@@ -22,11 +22,11 @@ resource "aws_security_group" "web_server_sg" {
 }
 
 resource "aws_security_group" "web_server_alb_sg" {
-  name_prefix = "ALB-${var.name}-"
+  name_prefix = "${var.name}-alb-"
   description = "Allow traffic with HTTP and HTTPS ports from any."
   vpc_id      = "${var.vpc_id}"
 
-    egress {
+  egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
