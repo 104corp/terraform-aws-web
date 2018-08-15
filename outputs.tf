@@ -63,60 +63,60 @@ output "launch_configuration_name" {
 ### Travis CI user
 output "travisci_user_arn" {
   description = "The IAM user arn of Travis CI."
-  value       = "${aws_iam_user.travisci_web.arn}"
+  value       = "${aws_iam_user.travisci_web.0.arn}"
 }
 
 output "travisci_user_name" {
   description = "The IAM user name of Travis CI."
-  value       = "${aws_iam_user.travisci_web.name}"
+  value       = "${aws_iam_user.travisci_web.0.name}"
 }
 
 output "travisci_user_unique_id" {
   description = "The IAM user unique id of Travis CI."
-  value       = "${aws_iam_user.travisci_web.unique_id}"
+  value       = "${aws_iam_user.travisci_web.0.unique_id}"
 }
 
 ### Web role
 
 output "web_role_arn" {
   description = "A string of IAM Role arn for Web."
-  value       = "${aws_iam_role.ec2_web.arn}"
+  value       = "${aws_iam_role.ec2_web.0.arn}"
 }
 
 output "web_role_name" {
   description = "A string of IAM Role name for Web."
-  value       = "${aws_iam_role.ec2_web.name}"
+  value       = "${aws_iam_role.ec2_web.0.name}"
 }
 
 output "web_role_unique_id" {
   description = "A string IAM Role unique id for Web."
-  value       = "${aws_iam_role.ec2_web.unique_id}"
+  value       = "${aws_iam_role.ec2_web.0.unique_id}"
 }
 
 ### Codedeploy role
 
 output "codedeploy_role_arn" {
   description = "A string of IAM Role arn for codedeploy."
-  value       = "${aws_iam_role.role_codedeploy.arn}"
+  value       = "${aws_iam_role.role_codedeploy.0.arn}"
 }
 
 output "codedeploy_role_name" {
   description = "A string of IAM Role name for codedeploy."
-  value       = "${aws_iam_role.role_codedeploy.name}"
+  value       = "${aws_iam_role.role_codedeploy.0.name}"
 }
 
 output "codedeploy_role_unique_id" {
   description = "A string IAM Role unique id for codedeploy."
-  value       = "${aws_iam_role.role_codedeploy.unique_id}"
+  value       = "${aws_iam_role.role_codedeploy.0.unique_id}"
 }
 
 ### Security Groups
 output "web_sg_id" {
   description = "The Security Group ID of Web."
-  value       = "${aws_security_group.web_server_sg.id}"
+  value       = "${aws_security_group.web_server_sg.0.id}"
 }
 
 output "alb_sg_id" {
   description = "The Security Group ID of ALB."
-  value       = "${aws_security_group.web_server_alb_sg.id}"
+  value       = "${aws_security_group.web_server_alb_sg.0.id}"
 }
