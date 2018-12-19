@@ -218,6 +218,8 @@ variable "instance_type" {
 
 variable "key_name" { description = "The key pair name of launchconfig." }
 
+variable "user_data" { description = "The user data of launchconfig." }
+
 variable "ec2_subnet_ids" {
   description = "The ids of subnet for EC2."
   type        = "list"

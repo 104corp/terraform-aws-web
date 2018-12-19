@@ -28,6 +28,7 @@ module "autoscaling" {
   iam_instance_profile = "${aws_iam_instance_profile.ec2_web_instance_profile.arn}"
   target_group_arns    = "${module.alb.target_group_arns}"
   key_name             = "${var.key_name}"
+  user_data            = "${var.user_data}"
 
   # Auto scaling group
   asg_name                  = "${var.name}"
