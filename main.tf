@@ -79,7 +79,7 @@ data "aws_elb_service_account" "main" {}
 
 module "autoscaling" {
   source  = "terraform-aws-modules/autoscaling/aws"
-  version = "2.7.0"
+  version = "2.9.1"
 
   name        = "${var.name}"
   tags_as_map = "${var.tags}"

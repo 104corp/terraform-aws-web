@@ -2,9 +2,13 @@
 #  general variables
 ####################
 
-variable "name" { description = "The name of project." }
+variable "name" {
+  description = "The name of project."
+}
 
-variable "env" { description = "The environment of project." }
+variable "env" {
+  description = "The environment of project."
+}
 
 variable "tags" {
   description = "The tags of resource."
@@ -22,11 +26,11 @@ variable "schedule_valid_time" {
 
 variable "schedule_valid_time_delay" {
   description = "A string of instance schedule valid time delay for Web."
-  default     = "10m" 
+  default     = "10m"
 }
 
 variable "travisci_enable" {
-  description = "The travis-ci enable for autoscaling."
+  description = "The travis-ci enable for Web."
   default     = false
 }
 
@@ -35,13 +39,18 @@ variable "travisci_user_destroy" {
   default     = false
 }
 
+variable "iam_write_cloudwatch_log_enable" {
+  description = "The IAM enable cloudwatch log for web."
+  default     = false
+}
+
 variable "codedeploy_enable" {
-  description = "The codedeploy enable for autoscaling."
+  description = "The codedeploy enable for web."
   default     = false
 }
 
 variable "codedeploy_s3_destroy" {
-  description = "A boolean of destroy s3 bucket for codedeploy."
+  description = "A boolean of destroy s3 bucket for web."
   default     = true
 }
 
@@ -128,97 +137,106 @@ variable "autoscaling_schedule_enable" {
 variable "autoscaling_schedule" {
   description = "A list of instance schedule for autoscaling. default a 5x8 work week with online AM 08:00 and offline 20:00, saturday and sunday is holiday."
   type        = "list"
-  default     = [
-    # online days
-    # {
-    #   action_name      = "monday-online"
-    #   min_size         = 0
-    #   max_size         = 1
-    #   desired_capacity = 1
-    #   recurrence       = "0 8 * * 1"
-    # },
-    # {
-    #   action_name      = "tuesday-online"
-    #   min_size         = 0
-    #   max_size         = 1
-    #   desired_capacity = 1
-    #   recurrence       = "0 8 * * 2"
-    # },
-    # {
-    #   action_name      = "wednesday-online"
-    #   min_size         = 0
-    #   max_size         = 1
-    #   desired_capacity = 1
-    #   recurrence       = "0 8 * * 3"
-    # },
-    # {
-    #   action_name      = "thursday-online"
-    #   min_size         = 0
-    #   max_size         = 1
-    #   desired_capacity = 1
-    #   recurrence       = "0 8 * * 4"
-    # },
-    # {
-    #   action_name      = "friday-online"
-    #   min_size         = 0
-    #   max_size         = 1
-    #   desired_capacity = 1
-    #   recurrence       = "0 8 * * 5"
-    # },
-    # # offline days
-    # {
-    #   action_name      = "monday-offline"
-    #   min_size         = 0
-    #   max_size         = 0
-    #   desired_capacity = 0
-    #   recurrence       = "0 20 * * 1"
-    # },
-    # {
-    #   action_name      = "tuesday-offline"
-    #   min_size         = 0
-    #   max_size         = 0
-    #   desired_capacity = 0
-    #   recurrence       = "0 20 * * 2"
-    # },
-    # {
-    #   action_name      = "wednesday-offline"
-    #   min_size         = 0
-    #   max_size         = 0
-    #   desired_capacity = 0
-    #   recurrence       = "0 20 * * 3"
-    # },
-    # {
-    #   action_name      = "thursday-offline"
-    #   min_size         = 0
-    #   max_size         = 0
-    #   desired_capacity = 0
-    #   recurrence       = "0 20 * * 4"
-    # },
-    # {
-    #   action_name      = "friday-offline"
-    #   min_size         = 0
-    #   max_size         = 0
-    #   desired_capacity = 0
-    #   recurrence       = "0 20 * * 4"
-    # }
-  ]
+  default     = []
+
+  # online days
+  # {
+  #   action_name      = "monday-online"
+  #   min_size         = 0
+  #   max_size         = 1
+  #   desired_capacity = 1
+  #   recurrence       = "0 8 * * 1"
+  # },
+  # {
+  #   action_name      = "tuesday-online"
+  #   min_size         = 0
+  #   max_size         = 1
+  #   desired_capacity = 1
+  #   recurrence       = "0 8 * * 2"
+  # },
+  # {
+  #   action_name      = "wednesday-online"
+  #   min_size         = 0
+  #   max_size         = 1
+  #   desired_capacity = 1
+  #   recurrence       = "0 8 * * 3"
+  # },
+  # {
+  #   action_name      = "thursday-online"
+  #   min_size         = 0
+  #   max_size         = 1
+  #   desired_capacity = 1
+  #   recurrence       = "0 8 * * 4"
+  # },
+  # {
+  #   action_name      = "friday-online"
+  #   min_size         = 0
+  #   max_size         = 1
+  #   desired_capacity = 1
+  #   recurrence       = "0 8 * * 5"
+  # },
+  # # offline days
+  # {
+  #   action_name      = "monday-offline"
+  #   min_size         = 0
+  #   max_size         = 0
+  #   desired_capacity = 0
+  #   recurrence       = "0 20 * * 1"
+  # },
+  # {
+  #   action_name      = "tuesday-offline"
+  #   min_size         = 0
+  #   max_size         = 0
+  #   desired_capacity = 0
+  #   recurrence       = "0 20 * * 2"
+  # },
+  # {
+  #   action_name      = "wednesday-offline"
+  #   min_size         = 0
+  #   max_size         = 0
+  #   desired_capacity = 0
+  #   recurrence       = "0 20 * * 3"
+  # },
+  # {
+  #   action_name      = "thursday-offline"
+  #   min_size         = 0
+  #   max_size         = 0
+  #   desired_capacity = 0
+  #   recurrence       = "0 20 * * 4"
+  # },
+  # {
+  #   action_name      = "friday-offline"
+  #   min_size         = 0
+  #   max_size         = 0
+  #   desired_capacity = 0
+  #   recurrence       = "0 20 * * 4"
+  # }
 }
 
 #############
 # ASG module 
 #############
-variable "vpc_id" { description = "The id of VPC." }
+variable "vpc_id" {
+  description = "The id of VPC."
+}
 
-variable "image_id" { description = "The AMI ID of launchconfig." }
+variable "image_id" {
+  description = "The AMI ID of launchconfig."
+}
 
 variable "instance_type" {
   description = "The instance_type of launchconfig."
   default     = "t2.micro"
 }
 
-variable "key_name" { description = "The key pair name of launchconfig." }
+variable "key_name" {
+  description = "The key pair name of launchconfig."
+}
 
-variable "user_data" { description = "The user data of launchconfig." }
+variable "user_data" {
+  description = "The user data of launchconfig."
+  default     = " "
+}
 
 variable "ec2_subnet_ids" {
   description = "The ids of subnet for EC2."
