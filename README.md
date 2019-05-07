@@ -82,10 +82,11 @@ Apache 2 Licensed. See LICENSE for full details.
 | codedeploy\_blue\_green\_deployment\_config | A list of deployment config with blue / green for codedeploy. | list | `<list>` | no |
 | codedeploy\_deployment\_config\_name | A string of deployment config name for codedeploy. | string | `"CodeDeployDefault.OneAtATime"` | no |
 | codedeploy\_deployment\_style | A map of deployment style for codedeploy. | map | `<map>` | no |
-| codedeploy\_enable | The codedeploy enable for autoscaling. | string | `"false"` | no |
-| codedeploy\_s3\_destroy | A boolean of destroy s3 bucket for codedeploy. | string | `"true"` | no |
+| codedeploy\_enable | The codedeploy enable for web. | string | `"false"` | no |
+| codedeploy\_s3\_destroy | A boolean of destroy s3 bucket for web. | string | `"true"` | no |
 | ec2\_subnet\_ids | The ids of subnet for EC2. | list | n/a | yes |
 | env | The environment of project. | string | n/a | yes |
+| iam\_write\_cloudwatch\_log\_enable | The IAM enable cloudwatch log for web. | string | `"false"` | no |
 | image\_id | The AMI ID of launchconfig. | string | n/a | yes |
 | instance\_type | The instance_type of launchconfig. | string | `"t2.micro"` | no |
 | key\_name | The key pair name of launchconfig. | string | n/a | yes |
@@ -95,9 +96,9 @@ Apache 2 Licensed. See LICENSE for full details.
 | schedule\_valid\_time | A string of instance schedule valid time for Web. | string | `""` | no |
 | schedule\_valid\_time\_delay | A string of instance schedule valid time delay for Web. | string | `"10m"` | no |
 | tags | The tags of resource. | map | n/a | yes |
-| travisci\_enable | The travis-ci enable for autoscaling. | string | `"false"` | no |
+| travisci\_enable | The travis-ci enable for Web. | string | `"false"` | no |
 | travisci\_user\_destroy | The travis-ci iam user destroy. | string | `"false"` | no |
-| user\_data | The user data of launchconfig. | string | n/a | yes |
+| user\_data | The user data of launchconfig. | string | `" "` | no |
 | vpc\_id | The id of VPC. | string | n/a | yes |
 | web\_ingress | A list of Security Group ingress for Web. | list | `<list>` | no |
 | web\_ingress\_cidr\_blocks | A list of Security Group ingress cidr for Web. | list | `<list>` | no |

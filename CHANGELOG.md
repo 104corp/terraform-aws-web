@@ -1,3 +1,7 @@
+## 2019-05-07 - Release v0.1.0
+
+- add enable cloudwatch log write for Web 
+
 ## 2018-12-20 - Release v0.0.13
 
 - add user data support for launchconfigure.
